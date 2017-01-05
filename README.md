@@ -1,2 +1,2 @@
 # Hard
-learn python the hard way exercise code
+The exercise CODE from a excellent python book \<learn python the hard way\>
