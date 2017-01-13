@@ -1,9 +1,10 @@
-from random import randiant
+from sys import exit
+from random import randint
 
 class Scene(object):
 
     def enter(self):
-        pass
+        exit(1)
 
 class Engine(object):
 
@@ -11,7 +12,14 @@ class Engine(object):
         self.scene_map = scene_map
 
     def play(self):
-        pass
+        current_scene = self.scene_map.opening_scene()
+        last_scene = self.scene_map.next_scene('escape')
+
+        while current_scene != last_scene:
+            next_scene_name = current_scene.enter()
+            current_scene = self.scene_map.next_scene(next_scene_name)
+
+        current_scene.enter()
 
 class Death(Scene):
 
@@ -21,30 +29,36 @@ class Death(Scene):
         'You lose it.',
         'Three Body is immortal!!!'
         ]
-        print (randiant(Lines_death[0,2]), "END!!!")
-
+        print (Lines_death[randint(0,2)], "END!!!")
+        exit(0)
 class Central_Corridor(Scene):
 
     def enter(self):
-        print ("""You have entered the Central_Corridor, It is the first scene you
+        print ("""
+        You have entered the Central_Corridor, It is the first scene you
         will in. Just enjoy this game! In this scene, you will meet a alien from
         ThreeBody plant. Do you want to give up? Then you will have a choose:""")
 
         yesorno = input("Say: yes or no >: ")
         if yesorno == "yes":
-            print ("""You give up and the Three Body man will kill you with Drop of Water
+            print ("""
+            You give up and the Three Body man will kill you with Drop of Water
             (a kind of Weapon), then destroy the Earth.""")
-			return 'death'
+
+            return 'death'
 
         if yesorno == "no":
-            print ("""You stand up and build lots of Aircraft Carrier to fight with Three Body man,
+            print ("""
+            You stand up and build lots of Aircraft Carrier to fight with Three Body man,
             But you don't know you will dead or live.""")
-			return 'aircraft_carrier'
+
+            return 'aircraft_carrier'
 
 class Aircraft_Carrier(Scene):
 
     def enter(self):
-        print ("""People on Earth build lots of Aircraft Carrier to fight with
+        print ("""
+        People on Earth build lots of Aircraft Carrier to fight with
         Three Body man. But them don't know a Drop of water will kill all of them easily.
         People choose four Masters to figure out a wanderful way to beat back Three Body.
         But only one can finally finish this task well. Which one you guess:
@@ -53,25 +67,29 @@ class Aircraft_Carrier(Scene):
         3)HU Bo
         4)LUO Ji
         """)
-		master = input ("Now type in the number in front of the Master's Name >:")
-		if master == '1':
-			print ("You Dead! Master SUN Weigao is not the man who can destory the Three Body!")
-			return 'death'
-		elif master == '2':
-			print ("You Dead! Master MO Xiaoyu is not the man who can destory the Three Body!")
-			return 'death'
-		elif master == '3':
-			print ("You Dead! Master HU Bo is not the man who can destory the Three Body!")
-			return 'death'
-		else:
-			print ("""Congratulations! You choose LUO Ji as the true Master, and you are right.
+        master = input ("Now type in the number in front of the Master's Name >:")
+
+        if master == '1':
+
+            print ("You Dead! Master SUN Weigao is not the man who can destory the Three Body!")
+            return 'death'
+        elif master == '2':
+            print ("You Dead! Master MO Xiaoyu is not the man who can destory the Three Body!")
+            return 'death'
+        elif master == '3':
+            print ("You Dead! Master HU Bo is not the man who can destory the Three Body!")
+            return 'death'
+        else:
+            print ("""
+            Congratulations! You choose LUO Ji as the true Master, and you are right.
             He is the man who can kill the Three Body !""")
-			return 'the_bridge'
+            return 'the_bridge'
 
 class The_Bridge(Scene):
 
     def enter(self):
-        print ("""The bridge is the place you and the Master LUO Ji you choosed to have a final battle.
+        print ("""
+        The bridge is the place you and the Master LUO Ji you choosed to have a final battle.
         But!!!
         The Drop of Water killed all of you in just one second! By through all the
         aircraft carrier from one side to the other side! Earth Human failed !
@@ -94,7 +112,8 @@ class The_Bridge(Scene):
 class Escape(Scene):
 
     def enter(self):
-        print ("""After the final battle, Most of people dead and only few astronauts
+        print ("""
+        After the final battle, Most of people dead and only few astronauts
         with head is ZHANG Beihai survived with other four and only four human.
         They will escape to a plant far away from the earth. And they have a critical
         important task to continue the Human civilization.
@@ -103,21 +122,27 @@ class Escape(Scene):
 
         """)
 
-class Map(Scene):
+class Map(object):
+
+    scenes = {
+    "death": Death(),
+    "central_corridor": Central_Corridor(),
+    "aircraft_carrier": Aircraft_Carrier(),
+    "the_bridge": The_Bridge(),
+    "escape": Escape()
+    }
+
 
     def __init__(self, start_scene):
         self.start_scene = start_scene
 
 
     def next_scene(self, scene_name):
-        scene_name = {
-        "death": "Death",
-        "central_corridor": "Central_Corridor",
-        "aircraft_carrier": "Aircraft_Carrier",
-        "the_bridge": "The_Bridge",
-        "escape": "Escape"}
+        val = Map.scenes.get(scene_name)
+        return val
 
     def opening_scene(self):
+        return  self.next_scene(self.start_scene)
 
 
 
